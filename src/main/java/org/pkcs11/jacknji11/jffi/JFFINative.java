@@ -22,7 +22,7 @@
 package org.pkcs11.jacknji11.jffi;
 
 import jnr.ffi.Address;
-import jnr.ffi.Library;
+import jnr.ffi.LibraryLoader;
 import jnr.ffi.Pointer;
 import jnr.ffi.annotations.In;
 import jnr.ffi.annotations.Out;
@@ -34,7 +34,7 @@ import jnr.ffi.byref.NativeLongByReference;
  */
 public class JFFINative {
     static {
-        Library.loadLibrary(JFFINative.class, "cryptoki");
+        LibraryLoader.create(JFFINative.class).load("cryptoki");
     }
 
     public static native int C_Initialize(@In JFFI_CK_C_INITIALIZE_ARGS pInitArgs);

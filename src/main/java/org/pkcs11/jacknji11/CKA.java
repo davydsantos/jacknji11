@@ -23,9 +23,8 @@ package org.pkcs11.jacknji11;
 
 import java.math.BigInteger;
 import java.util.Map;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * CKA_? constants and wrapper for CK_ATTRIBUTE struct.
@@ -33,7 +32,8 @@ import org.apache.commons.logging.LogFactory;
  * @author Joel Hockey (joel.hockey@gmail.com)
  */
 public class CKA {
-    private static final Log log = LogFactory.getLog(CKA.class);
+    public static final Logger logger = Logger.getLogger(CKA.class.getName());
+
     public static final long CKF_ARRAY_ATTRIBUTE = 0x40000000;
 
     public static final long CLASS = 0x00000000;
@@ -409,7 +409,7 @@ public class CKA {
             }
         } catch (Exception e) { // unexpected CKA values
             // log warning
-            log.warn("Unexpected CKA values", e);
+            logger.log(Level.FINE, "Unexpected CKA values", e);
             // hex dump below
         }
 

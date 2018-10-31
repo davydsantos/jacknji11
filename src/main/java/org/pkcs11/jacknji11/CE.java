@@ -51,12 +51,22 @@ package org.pkcs11.jacknji11;
  */
 public class CE {
 
+    private C C;
+
+    public CE(C nativeLibrary) {
+        this.C = nativeLibrary;
+    }
+
+    public CE(String libraryPath) {
+        this(new C(libraryPath));
+    }
+
     /**
      * Initialize cryptoki.
      * @see C#Initialize()
      * @see NativeProvider#C_Initialize(CK_C_INITIALIZE_ARGS)
      */
-    public static void Initialize() {
+    public void Initialize() {
         long rv = C.Initialize();
         if (rv != CKR.OK) throw new CKRException(rv);
     }
@@ -66,7 +76,7 @@ public class CE {
      * @see C#Finalize()
      * @see NativeProvider#C_Finalize(Pointer)
      */
-    public static void Finalize() {
+    public void Finalize() {
         long rv = C.Finalize();
         if (rv != CKR.OK) throw new CKRException(rv);
     }
@@ -77,7 +87,7 @@ public class CE {
      * @see C#GetInfo(CK_INFO)
      * @see NativeProvider#C_GetInfo(CK_INFO)
      */
-    public static void GetInfo(CK_INFO info) {
+    public void GetInfo(CK_INFO info) {
         long rv = C.GetInfo(info);
         if (rv != CKR.OK) throw new CKRException(rv);
     }
@@ -88,7 +98,7 @@ public class CE {
      * @see C#GetInfo(CK_INFO)
      * @see NativeProvider#C_GetInfo(CK_INFO)
      */
-    public static CK_INFO GetInfo() {
+    public CK_INFO GetInfo() {
         CK_INFO info = new CK_INFO();
         GetInfo(info);
         return info;
@@ -102,7 +112,7 @@ public class CE {
      * @see C#GetSlotList(boolean, long[], LongRef)
      * @see NativeProvider#C_GetSlotList(byte, long[], LongRef)
      */
-    public static void GetSlotList(boolean tokenPresent, long[] slotList, LongRef count) {
+    public void GetSlotList(boolean tokenPresent, long[] slotList, LongRef count) {
         long rv = C.GetSlotList(tokenPresent, slotList, count);
         if (rv != CKR.OK) throw new CKRException(rv);
     }
@@ -114,7 +124,7 @@ public class CE {
      * @see C#GetSlotList(boolean, long[], LongRef)
      * @see NativeProvider#C_GetSlotList(byte, long[], LongRef)
      */
-    public static long[] GetSlotList(boolean tokenPresent) {
+    public long[] GetSlotList(boolean tokenPresent) {
         LongRef count = new LongRef();
         GetSlotList(tokenPresent, null, count);
         long[] result = new long[(int) count.value()];
@@ -131,7 +141,7 @@ public class CE {
      * @see NativeProvider#C_GetSlotList(byte, long[], LongRef)
      * @see NativeProvider#C_GetTokenInfo(long, CK_TOKEN_INFO)
      */
-    public static long GetSlot(String label) {
+    public long GetSlot(String label) {
         long[] allslots = GetSlotList(true);
         for (long slot : allslots) {
             CK_TOKEN_INFO tok = GetTokenInfo(slot);
@@ -149,7 +159,7 @@ public class CE {
      * @see C#GetSlotInfo(long, CK_SLOT_INFO)
      * @see NativeProvider#C_GetSlotInfo(long, CK_SLOT_INFO)
      */
-    public static void GetSlotInfo(long slotID, CK_SLOT_INFO info) {
+    public void GetSlotInfo(long slotID, CK_SLOT_INFO info) {
         long rv = C.GetSlotInfo(slotID, info);
         if (rv != CKR.OK) throw new CKRException(rv);
     }
@@ -161,7 +171,7 @@ public class CE {
      * @see C#GetSlotInfo(long, CK_SLOT_INFO)
      * @see NativeProvider#C_GetSlotInfo(long, CK_SLOT_INFO)
      */
-    public static CK_SLOT_INFO GetSlotInfo(long slotID) {
+    public CK_SLOT_INFO GetSlotInfo(long slotID) {
         CK_SLOT_INFO info = new CK_SLOT_INFO();
         GetSlotInfo(slotID, info);
         return info;
@@ -174,7 +184,7 @@ public class CE {
      * @see C#GetTokenInfo(long, CK_TOKEN_INFO)
      * @see NativeProvider#C_GetTokenInfo(long, CK_TOKEN_INFO)
      */
-    public static void GetTokenInfo(long slotID, CK_TOKEN_INFO info) {
+    public void GetTokenInfo(long slotID, CK_TOKEN_INFO info) {
         long rv = C.GetTokenInfo(slotID, info);
         if (rv != CKR.OK) throw new CKRException(rv);
     }
@@ -186,7 +196,7 @@ public class CE {
      * @see C#GetTokenInfo(long, CK_TOKEN_INFO)
      * @see NativeProvider#C_GetTokenInfo(long, CK_TOKEN_INFO)
      */
-    public static CK_TOKEN_INFO GetTokenInfo(long slotID) {
+    public CK_TOKEN_INFO GetTokenInfo(long slotID) {
         CK_TOKEN_INFO info = new CK_TOKEN_INFO();
         GetTokenInfo(slotID, info);
         return info;
@@ -200,7 +210,7 @@ public class CE {
      * @see C#WaitForSlotEvent(long, LongRef, Pointer)
      * @see NativeProvider#C_WaitForSlotEvent(long, LongRef, Pointer)
      */
-    public static void WaitForSlotEvent(long flags, LongRef slot, NativePointer pReserved) {
+    public void WaitForSlotEvent(long flags, LongRef slot, NativePointer pReserved) {
         long rv = C.WaitForSlotEvent(flags, slot, pReserved);
         if (rv != CKR.OK) throw new CKRException(rv);
     }
@@ -213,7 +223,7 @@ public class CE {
      * @see C#GetMechanismList(long, long[], LongRef)
      * @see NativeProvider#C_GetMechanismList(long, long[], LongRef)
      */
-    public static void GetMechanismList(long slotID, long[] mechanismList, LongRef count) {
+    public void GetMechanismList(long slotID, long[] mechanismList, LongRef count) {
         long rv = C.GetMechanismList(slotID, mechanismList, count);
         if (rv != CKR.OK) throw new CKRException(rv);
     }
@@ -225,7 +235,7 @@ public class CE {
      * @see C#GetMechanismList(long, long[], LongRef)
      * @see NativeProvider#C_GetMechanismList(long, long[], LongRef)
      */
-    public static long[] GetMechanismList(long slotID) {
+    public long[] GetMechanismList(long slotID) {
         LongRef count = new LongRef();
         GetMechanismList(slotID, null, count);
         long[] mechanisms = new long[(int) count.value()];
@@ -241,7 +251,7 @@ public class CE {
      * @see C#GetMechanismInfo(long, long, CK_MECHANISM_INFO)
      * @see NativeProvider#C_GetMechanismInfo(long, long, CK_MECHANISM_INFO)
      */
-    public static void GetMechanismInfo(long slotID, long type, CK_MECHANISM_INFO info) {
+    public void GetMechanismInfo(long slotID, long type, CK_MECHANISM_INFO info) {
         long rv = C.GetMechanismInfo(slotID, type, info);
         if (rv != CKR.OK) throw new CKRException(rv);
     }
@@ -253,7 +263,7 @@ public class CE {
      * @see C#GetMechanismInfo(long, long, CK_MECHANISM_INFO)
      * @see NativeProvider#C_GetMechanismInfo(long, long, CK_MECHANISM_INFO)
      */
-    public static CK_MECHANISM_INFO GetMechanismInfo(long slotID, long type) {
+    public CK_MECHANISM_INFO GetMechanismInfo(long slotID, long type) {
         CK_MECHANISM_INFO info = new CK_MECHANISM_INFO();
         GetMechanismInfo(slotID, type, info);
         return info;
@@ -268,7 +278,7 @@ public class CE {
      * @see C#InitToken(long, byte[], byte[])
      * @see NativeProvider#C_InitToken(long, byte[], long, byte[])
      */
-    public static void InitToken(long slotID, byte[] pin, byte[] label) {
+    public void InitToken(long slotID, byte[] pin, byte[] label) {
         long rv = C.InitToken(slotID, pin, label);
         if (rv != CKR.OK) throw new CKRException(rv);
     }
@@ -280,7 +290,7 @@ public class CE {
      * @see C#InitPIN(long, byte[])
      * @see NativeProvider#C_InitPIN(long, byte[], long)
      */
-    public static void InitPIN(long session, byte[] pin) {
+    public void InitPIN(long session, byte[] pin) {
         long rv = C.InitPIN(session, pin);
         if (rv != CKR.OK) throw new CKRException(rv);
     }
@@ -293,7 +303,7 @@ public class CE {
      * @see C#SetPIN(long, byte[], byte[])
      * @see NativeProvider#C_SetPIN(long, byte[], long, byte[], long)
      */
-    public static void SetPIN(long session, byte[] oldPin, byte[] newPin) {
+    public void SetPIN(long session, byte[] oldPin, byte[] newPin) {
         long rv = C.SetPIN(session, oldPin, newPin);
         if (rv != CKR.OK) throw new CKRException(rv);
     }
@@ -308,7 +318,7 @@ public class CE {
      * @see C#OpenSession(long, long, Pointer, CK_NOTIFY, LongRef)
      * @see NativeProvider#C_OpenSession(long, long, Pointer, CK_NOTIFY, LongRef)
      */
-    public static void OpenSession(long slotID, long flags, NativePointer application, CK_NOTIFY notify, LongRef session) {
+    public void OpenSession(long slotID, long flags, NativePointer application, CK_NOTIFY notify, LongRef session) {
         long rv = C.OpenSession(slotID, flags, application, notify, session);
         if (rv != CKR.OK) throw new CKRException(rv);
     }
@@ -323,7 +333,7 @@ public class CE {
      * @see C#OpenSession(long, long, Pointer, CK_NOTIFY, LongRef)
      * @see NativeProvider#C_OpenSession(long, long, Pointer, CK_NOTIFY, LongRef)
      */
-    public static long OpenSession(long slotID, long flags, NativePointer application, CK_NOTIFY notify) {
+    public long OpenSession(long slotID, long flags, NativePointer application, CK_NOTIFY notify) {
         LongRef session = new LongRef();
         OpenSession(slotID, flags, application, notify, session);
         return session.value();
@@ -337,7 +347,7 @@ public class CE {
      * @see C#OpenSession(long, long, Pointer, CK_NOTIFY, LongRef)
      * @see NativeProvider#C_OpenSession(long, long, Pointer, CK_NOTIFY, LongRef)
      */
-    public static long OpenSession(long slotID) {
+    public long OpenSession(long slotID) {
         return OpenSession(slotID, CKS.RW_PUBLIC_SESSION, null, null);
     }
 
@@ -347,7 +357,7 @@ public class CE {
      * @see C#CloseSession(long)
      * @see NativeProvider#C_CloseSession(long)
      */
-    public static void CloseSession(long session) {
+    public void CloseSession(long session) {
         long rv = C.CloseSession(session);
         if (rv != CKR.OK) throw new CKRException(rv);
     }
@@ -358,7 +368,7 @@ public class CE {
      * @see C#CloseAllSessions(long)
      * @see NativeProvider#C_CloseAllSessions(long)
      */
-    public static void CloseAllSessions(long slotID) {
+    public void CloseAllSessions(long slotID) {
         long rv = C.CloseAllSessions(slotID);
         if (rv != CKR.OK) throw new CKRException(rv);
     }
@@ -370,7 +380,7 @@ public class CE {
      * @see C#GetSessionInfo(long, CK_SESSION_INFO)
      * @see NativeProvider#C_GetSessionInfo(long, CK_SESSION_INFO)
      */
-    public static void GetSessionInfo(long session, CK_SESSION_INFO info) {
+    public void GetSessionInfo(long session, CK_SESSION_INFO info) {
         long rv = C.GetSessionInfo(session, info);
         if (rv != CKR.OK) throw new CKRException(rv);
     }
@@ -382,7 +392,7 @@ public class CE {
      * @see C#GetSessionInfo(long, CK_SESSION_INFO)
      * @see NativeProvider#C_GetSessionInfo(long, CK_SESSION_INFO)
      */
-    public static CK_SESSION_INFO GetSessionInfo(long session) {
+    public CK_SESSION_INFO GetSessionInfo(long session) {
         CK_SESSION_INFO info = new CK_SESSION_INFO();
         GetSessionInfo(session, info);
         return info;
@@ -396,7 +406,7 @@ public class CE {
      * @see C#GetOperationState(long, byte[], LongRef)
      * @see NativeProvider#C_GetOperationState(long, byte[], LongRef)
      */
-    public static void GetOperationState(long session, byte[] operationState, LongRef operationStateLen) {
+    public void GetOperationState(long session, byte[] operationState, LongRef operationStateLen) {
         long rv = C.GetOperationState(session, operationState, operationStateLen);
         if (rv != CKR.OK) throw new CKRException(rv);
     }
@@ -408,7 +418,7 @@ public class CE {
      * @see C#GetOperationState(long, byte[], LongRef)
      * @see NativeProvider#C_GetOperationState(long, byte[], LongRef)
      */
-    public static byte[] GetOperationState(long session) {
+    public byte[] GetOperationState(long session) {
         LongRef len = new LongRef();
         GetOperationState(session, null, len);
         byte[] result = new byte[(int) len.value()];
@@ -425,7 +435,7 @@ public class CE {
      * @see C#SetOperationState(long, byte[], long, long)
      * @see NativeProvider#C_SetOperationState(long, byte[], long, long, long)
      */
-    public static void SetOperationState(long session, byte[] operationState, long encryptionKey, long authenticationKey) {
+    public void SetOperationState(long session, byte[] operationState, long encryptionKey, long authenticationKey) {
         long rv = C.SetOperationState(session, operationState, encryptionKey, authenticationKey);
         if (rv != CKR.OK) throw new CKRException(rv);
     }
@@ -438,7 +448,7 @@ public class CE {
      * @see C#Login(long, long, byte[])
      * @see NativeProvider#C_Login(long, long, byte[], long)
      */
-    public static void Login(long session, long userType, byte[] pin) {
+    public void Login(long session, long userType, byte[] pin) {
         long rv = C.Login(session, userType, pin);
         if (rv != CKR.OK && rv != CKR.USER_ALREADY_LOGGED_IN) throw new CKRException(rv);
     }
@@ -450,7 +460,7 @@ public class CE {
      * @see C#Login(long, long, byte[])
      * @see NativeProvider#C_Login(long, long, byte[], long)
      */
-    public static void LoginUser(long session, byte[] pin) {
+    public void LoginUser(long session, byte[] pin) {
         Login(session, CKU.USER, pin);
     }
 
@@ -461,7 +471,7 @@ public class CE {
      * @see C#Login(long, long, byte[])
      * @see NativeProvider#C_Login(long, long, byte[], long)
      */
-    public static void LoginUser(long session, String pin) {
+    public void LoginUser(long session, String pin) {
         LoginUser(session, Buf.c2b(pin));
     }
 
@@ -472,7 +482,7 @@ public class CE {
      * @see C#Login(long, long, byte[])
      * @see NativeProvider#C_Login(long, long, byte[], long)
      */
-    public static void LoginSO(long session, byte[] pin) {
+    public void LoginSO(long session, byte[] pin) {
         Login(session, CKU.SO, pin);
     }
 
@@ -483,7 +493,7 @@ public class CE {
      * @see C#Login(long, long, byte[])
      * @see NativeProvider#C_Login(long, long, byte[], long)
      */
-    public static void LoginSO(long session, String pin) {
+    public void LoginSO(long session, String pin) {
         LoginSO(session, Buf.c2b(pin));
     }
 
@@ -493,7 +503,7 @@ public class CE {
      * @see C#Logout(long)
      * @see NativeProvider#C_Logout(long)
      */
-    public static void Logout(long session) {
+    public void Logout(long session) {
         long rv = C.Logout(session);
         if (rv != CKR.OK) throw new CKRException(rv);
     }
@@ -506,7 +516,7 @@ public class CE {
      * @see C#CreateObject(long, CKA[], LongRef)
      * @see NativeProvider#C_CreateObject(long, Template, long, LongRef)
      */
-    public static void CreateObject(long session, CKA[] templ, LongRef object) {
+    public void CreateObject(long session, CKA[] templ, LongRef object) {
         long rv = C.CreateObject(session, templ, object);
         if (rv != CKR.OK) throw new CKRException(rv);
     }
@@ -518,7 +528,7 @@ public class CE {
      * @see C#CreateObject(long, CKA[], LongRef)
      * @see NativeProvider#C_CreateObject(long, Template, long, LongRef)
      */
-    public static long CreateObject(long session, CKA... templ) {
+    public long CreateObject(long session, CKA... templ) {
         LongRef object = new LongRef();
         CreateObject(session, templ, object);
         return object.value();
@@ -533,7 +543,7 @@ public class CE {
      * @see C#CopyObject(long, long, CKA[], LongRef)
      * @see NativeProvider#C_CopyObject(long, long, Template, long, LongRef)
      */
-    public static void CopyObject(long session, long object, CKA[] templ, LongRef newObject) {
+    public void CopyObject(long session, long object, CKA[] templ, LongRef newObject) {
         long rv = C.CopyObject(session, object, templ, newObject);
         if (rv != CKR.OK) throw new CKRException(rv);
     }
@@ -547,7 +557,7 @@ public class CE {
      * @see C#CopyObject(long, long, CKA[], LongRef)
      * @see NativeProvider#C_CopyObject(long, long, Template, long, LongRef)
      */
-    public static long CopyObject(long session, long object, CKA... templ) {
+    public long CopyObject(long session, long object, CKA... templ) {
         LongRef newObject = new LongRef();
         CopyObject(session, object, templ, newObject);
         return newObject.value();
@@ -560,7 +570,7 @@ public class CE {
      * @see C#DestroyObject(long, long)
      * @see NativeProvider#C_DestroyObject(long, long)
      */
-    public static void DestroyObject(long session, long object) {
+    public void DestroyObject(long session, long object) {
         long rv = C.DestroyObject(session, object);
         if (rv != CKR.OK) throw new CKRException(rv);
     }
@@ -573,7 +583,7 @@ public class CE {
      * @see C#GetObjectSize(long, long, LongRef)
      * @see NativeProvider#C_GetObjectSize(long, long, LongRef)
      */
-    public static void GetObjectSize(long session, long object, LongRef size) {
+    public void GetObjectSize(long session, long object, LongRef size) {
         long rv = C.GetObjectSize(session, object, size);
         if (rv != CKR.OK) throw new CKRException(rv);
     }
@@ -586,7 +596,7 @@ public class CE {
      * @see C#GetObjectSize(long, long, LongRef)
      * @see NativeProvider#C_GetObjectSize(long, long, LongRef)
      */
-    public static long GetObjectSize(long session, long object) {
+    public long GetObjectSize(long session, long object) {
         LongRef size = new LongRef();
         GetObjectSize(session, object, size);
         return size.value();
@@ -600,7 +610,7 @@ public class CE {
      * @see C#GetAttributeValue(long, long, CKA[])
      * @see NativeProvider#C_GetAttributeValue(long, long, Template, long)
      */
-    public static void GetAttributeValue(long session, long object, CKA... templ) {
+    public void GetAttributeValue(long session, long object, CKA... templ) {
         if (templ == null || templ.length == 0) {
             return;
         }
@@ -616,7 +626,7 @@ public class CE {
      * @see C#GetAttributeValue(long, long, CKA[])
      * @see NativeProvider#C_GetAttributeValue(long, long, Template, long)
      */
-    public static CKA GetAttributeValue(long session, long object, long cka) {
+    public CKA GetAttributeValue(long session, long object, long cka) {
         CKA[] templ = {new CKA(cka)};
         long rv = C.GetAttributeValue(session, object, templ);
         if (rv == CKR.ATTRIBUTE_TYPE_INVALID || templ[0].ulValueLen == 0) {
@@ -641,7 +651,7 @@ public class CE {
      * @see C#GetAttributeValue(long, long, CKA[])
      * @see NativeProvider#C_GetAttributeValue(long, long, Template, long)
      */
-    public static CKA[] GetAttributeValue(long session, long object, long... types) {
+    public CKA[] GetAttributeValue(long session, long object, long... types) {
         if (types == null || types.length == 0) {
             return new CKA[0];
         }
@@ -682,7 +692,7 @@ public class CE {
      * @see C#SetAttributeValue(long, long, CKA[])
      * @see NativeProvider#C_SetAttributeValue(long, long, Template, long)
      */
-    public static void SetAttributeValue(long session, long object, CKA... templ) {
+    public void SetAttributeValue(long session, long object, CKA... templ) {
         long rv = C.SetAttributeValue(session, object, templ);
         if (rv != CKR.OK) throw new CKRException(rv);
     }
@@ -694,7 +704,7 @@ public class CE {
      * @see C#FindObjectsInit(long, CKA[])
      * @see NativeProvider#C_FindObjectsInit(long, Template, long)
      */
-    public static void FindObjectsInit(long session, CKA... templ) {
+    public void FindObjectsInit(long session, CKA... templ) {
         long rv = C.FindObjectsInit(session, templ);
         if (rv != CKR.OK) throw new CKRException(rv);
     }
@@ -708,7 +718,7 @@ public class CE {
      * @see C#FindObjects(long, long[], LongRef)
      * @see NativeProvider#C_FindObjects(long, long[], long, LongRef)
      */
-    public static void FindObjects(long session, long[] found, LongRef objectCount) {
+    public void FindObjects(long session, long[] found, LongRef objectCount) {
         long rv = C.FindObjects(session, found, objectCount);
         if (rv != CKR.OK) throw new CKRException(rv);
     }
@@ -722,7 +732,7 @@ public class CE {
      * @see C#FindObjects(long, long[], LongRef)
      * @see NativeProvider#C_FindObjects(long, long[], long, LongRef)
      */
-    public static long[] FindObjects(long session, int maxObjects) {
+    public long[] FindObjects(long session, int maxObjects) {
         long[] found = new long[maxObjects];
         LongRef len = new LongRef();
         FindObjects(session, found, len);
@@ -742,7 +752,7 @@ public class CE {
      * @see C#FindObjectsFinal(long)
      * @see NativeProvider#C_FindObjectsFinal(long)
      */
-    public static void FindObjectsFinal(long session) {
+    public void FindObjectsFinal(long session) {
         long rv = C.FindObjectsFinal(session);
         if (rv != CKR.OK) throw new CKRException(rv);
     }
@@ -755,7 +765,7 @@ public class CE {
      * @see C#FindObjectsInit(long, CKA[])
      * @see NativeProvider#C_FindObjectsInit(long, Template, long)
      */
-    public static long[] FindObjects(long session, CKA... templ) {
+    public long[] FindObjects(long session, CKA... templ) {
         FindObjectsInit(session, templ);
         int maxObjects = 1024;
         // call once
@@ -789,7 +799,7 @@ public class CE {
      * @see C#EncryptInit(long, CKM, long)
      * @see NativeProvider#C_EncryptInit(long, CKM, long)
      */
-    public static void EncryptInit(long session, CKM mechanism, long key) {
+    public void EncryptInit(long session, CKM mechanism, long key) {
         long rv = C.EncryptInit(session, mechanism, key);
         if (rv != CKR.OK) throw new CKRException(rv);
     }
@@ -803,7 +813,7 @@ public class CE {
      * @see C#Encrypt(long, byte[], byte[], LongRef)
      * @see NativeProvider#C_Encrypt(long, byte[], long, byte[], LongRef)
      */
-    public static void Encrypt(long session, byte[] data, byte[] encryptedData, LongRef encryptedDataLen) {
+    public void Encrypt(long session, byte[] data, byte[] encryptedData, LongRef encryptedDataLen) {
         long rv = C.Encrypt(session, data, encryptedData, encryptedDataLen);
         if (rv != CKR.OK) throw new CKRException(rv);
     }
@@ -817,7 +827,7 @@ public class CE {
      * @see C#Encrypt(long, byte[], byte[], LongRef)
      * @see NativeProvider#C_Encrypt(long, byte[], long, byte[], LongRef)
      */
-    public static byte[] EncryptPad(long session, byte[] data) {
+    public byte[] EncryptPad(long session, byte[] data) {
         LongRef l = new LongRef();
         Encrypt(session, data, null, l);
         byte[] result = new byte[(int) l.value()];
@@ -834,7 +844,7 @@ public class CE {
      * @see C#Encrypt(long, byte[], byte[], LongRef)
      * @see NativeProvider#C_Encrypt(long, byte[], long, byte[], LongRef)
      */
-    public static byte[] Encrypt(long session, byte[] data) {
+    public byte[] Encrypt(long session, byte[] data) {
         byte[] result = new byte[data.length];
         LongRef l = new LongRef(result.length);
         Encrypt(session, data, result, l);
@@ -850,7 +860,7 @@ public class CE {
      * @see C#EncryptUpdate(long, byte[], byte[], LongRef)
      * @see NativeProvider#C_EncryptUpdate(long, byte[], long, byte[], LongRef)
      */
-    public static void EncryptUpdate(long session, byte[] part, byte[] encryptedPart, LongRef encryptedPartLen) {
+    public void EncryptUpdate(long session, byte[] part, byte[] encryptedPart, LongRef encryptedPartLen) {
         long rv = C.EncryptUpdate(session, part, encryptedPart, encryptedPartLen);
         if (rv != CKR.OK) throw new CKRException(rv);
     }
@@ -863,7 +873,7 @@ public class CE {
      * @see C#EncryptUpdate(long, byte[], byte[], LongRef)
      * @see NativeProvider#C_EncryptUpdate(long, byte[], long, byte[], LongRef)
      */
-    public static byte[] EncryptUpdate(long session, byte[] part) {
+    public byte[] EncryptUpdate(long session, byte[] part) {
         LongRef l = new LongRef();
         EncryptUpdate(session, part, null, l);
         byte[] result = new byte[(int) l.value()];
@@ -879,7 +889,7 @@ public class CE {
      * @see C#EncryptFinal(long, byte[], LongRef)
      * @see NativeProvider#C_EncryptFinal(long, byte[], LongRef)
      */
-    public static void EncryptFinal(long session, byte[] lastEncryptedPart, LongRef lastEncryptedPartLen) {
+    public void EncryptFinal(long session, byte[] lastEncryptedPart, LongRef lastEncryptedPartLen) {
         long rv = C.EncryptFinal(session, lastEncryptedPart, lastEncryptedPartLen);
         if (rv != CKR.OK) throw new CKRException(rv);
     }
@@ -891,7 +901,7 @@ public class CE {
      * @see C#EncryptFinal(long, byte[], LongRef)
      * @see NativeProvider#C_EncryptFinal(long, byte[], LongRef)
      */
-    public static byte[] EncryptFinal(long session) {
+    public byte[] EncryptFinal(long session) {
         LongRef l = new LongRef();
         EncryptFinal(session, null, l);
         byte[] result = new byte[(int) l.value()];
@@ -910,7 +920,7 @@ public class CE {
      * @see C#Encrypt(long, byte[], byte[], LongRef)
      * @see NativeProvider#C_Encrypt(long, byte[], long, byte[], LongRef)
      */
-    public static byte[] EncryptPad(long session, CKM mechanism, long key, byte[] data) {
+    public byte[] EncryptPad(long session, CKM mechanism, long key, byte[] data) {
         EncryptInit(session, mechanism, key);
         return EncryptPad(session, data);
     }
@@ -926,7 +936,7 @@ public class CE {
      * @see C#Encrypt(long, byte[], byte[], LongRef)
      * @see NativeProvider#C_Encrypt(long, byte[], long, byte[], LongRef)
      */
-    public static byte[] Encrypt(long session, CKM mechanism, long key, byte[] data) {
+    public byte[] Encrypt(long session, CKM mechanism, long key, byte[] data) {
         EncryptInit(session, mechanism, key);
         return Encrypt(session, data);
     }
@@ -939,7 +949,7 @@ public class CE {
      * @see C#DecryptInit(long, CKM, long)
      * @see NativeProvider#C_DecryptInit(long, CKM, long)
      */
-    public static void DecryptInit(long session, CKM mechanism, long key) {
+    public void DecryptInit(long session, CKM mechanism, long key) {
         long rv = C.DecryptInit(session, mechanism, key);
         if (rv != CKR.OK) throw new CKRException(rv);
     }
@@ -953,7 +963,7 @@ public class CE {
      * @see C#Decrypt(long, byte[], byte[], LongRef)
      * @see NativeProvider#C_Decrypt(long, byte[], long, byte[], LongRef)
      */
-    public static void Decrypt(long session, byte[] encryptedData, byte[] data, LongRef dataLen) {
+    public void Decrypt(long session, byte[] encryptedData, byte[] data, LongRef dataLen) {
         long rv = C.Decrypt(session, encryptedData, data, dataLen);
         if (rv != CKR.OK) throw new CKRException(rv);
 
@@ -968,7 +978,7 @@ public class CE {
      * @see C#Decrypt(long, byte[], byte[], LongRef)
      * @see NativeProvider#C_Decrypt(long, byte[], long, byte[], LongRef)
      */
-    public static byte[] DecryptPad(long session, byte[] encryptedData) {
+    public byte[] DecryptPad(long session, byte[] encryptedData) {
         LongRef l = new LongRef();
         Decrypt(session, encryptedData, null, l);
         byte[] result = new byte[(int) l.value()];
@@ -985,7 +995,7 @@ public class CE {
      * @see C#Decrypt(long, byte[], byte[], LongRef)
      * @see NativeProvider#C_Decrypt(long, byte[], long, byte[], LongRef)
      */
-    public static byte[] Decrypt(long session, byte[] encryptedData) {
+    public byte[] Decrypt(long session, byte[] encryptedData) {
         byte[] result = new byte[encryptedData.length];
         LongRef l = new LongRef(result.length);
         Decrypt(session, encryptedData, result, l);
@@ -1001,7 +1011,7 @@ public class CE {
      * @see C#DecryptUpdate(long, byte[], byte[], LongRef)
      * @see NativeProvider#C_DecryptUpdate(long, byte[], long, byte[], LongRef)
      */
-    public static void DecryptUpdate(long session, byte[] encryptedPart, byte[] data, LongRef dataLen) {
+    public void DecryptUpdate(long session, byte[] encryptedPart, byte[] data, LongRef dataLen) {
         long rv = C.DecryptUpdate(session, encryptedPart, data, dataLen);
         if (rv != CKR.OK) throw new CKRException(rv);
     }
@@ -1014,7 +1024,7 @@ public class CE {
      * @see C#DecryptUpdate(long, byte[], byte[], LongRef)
      * @see NativeProvider#C_DecryptUpdate(long, byte[], long, byte[], LongRef)
      */
-    public static byte[] DecryptUpdate(long session, byte[] encryptedPart) {
+    public byte[] DecryptUpdate(long session, byte[] encryptedPart) {
         LongRef l = new LongRef();
         DecryptUpdate(session, encryptedPart, null, l);
         byte[] result = new byte[(int) l.value()];
@@ -1030,7 +1040,7 @@ public class CE {
      * @see C#DecryptFinal(long, byte[], LongRef)
      * @see NativeProvider#C_DecryptFinal(long, byte[], LongRef)
      */
-    public static void DecryptFinal(long session, byte[] lastPart, LongRef lastPartLen) {
+    public void DecryptFinal(long session, byte[] lastPart, LongRef lastPartLen) {
         long rv = C.DecryptFinal(session, lastPart, lastPartLen);
         if (rv != CKR.OK) throw new CKRException(rv);
     }
@@ -1042,7 +1052,7 @@ public class CE {
      * @see C#DecryptFinal(long, byte[], LongRef)
      * @see NativeProvider#C_DecryptFinal(long, byte[], LongRef)
      */
-    public static byte[] DecryptFinal(long session) {
+    public byte[] DecryptFinal(long session) {
         LongRef l = new LongRef();
         DecryptFinal(session, null, l);
         byte[] result = new byte[(int) l.value()];
@@ -1061,7 +1071,7 @@ public class CE {
      * @see C#Decrypt(long, byte[], byte[], LongRef)
      * @see NativeProvider#C_Decrypt(long, byte[], long, byte[], LongRef)
      */
-    public static byte[] DecryptPad(long session, CKM mechanism, long key, byte[] encryptedData) {
+    public byte[] DecryptPad(long session, CKM mechanism, long key, byte[] encryptedData) {
         DecryptInit(session, mechanism, key);
         return DecryptPad(session, encryptedData);
     }
@@ -1077,7 +1087,7 @@ public class CE {
      * @see C#Decrypt(long, byte[], byte[], LongRef)
      * @see NativeProvider#C_Decrypt(long, byte[], long, byte[], LongRef)
      */
-    public static byte[] Decrypt(long session, CKM mechanism, long key, byte[] encryptedData) {
+    public byte[] Decrypt(long session, CKM mechanism, long key, byte[] encryptedData) {
         DecryptInit(session, mechanism, key);
         return Decrypt(session, encryptedData);
     }
@@ -1089,7 +1099,7 @@ public class CE {
      * @see C#DigestInit(long, CKM)
      * @see NativeProvider#C_DigestInit(long, CKM)
      */
-    public static void DigestInit(long session, CKM mechanism) {
+    public void DigestInit(long session, CKM mechanism) {
         long rv = C.DigestInit(session, mechanism);
         if (rv != CKR.OK) throw new CKRException(rv);
     }
@@ -1103,7 +1113,7 @@ public class CE {
      * @see C#Digest(long, byte[], byte[], LongRef)
      * @see NativeProvider#C_Digest(long, byte[], long, byte[], LongRef)
      */
-    public static void Digest(long session, byte[] data, byte[] digest, LongRef digestLen) {
+    public void Digest(long session, byte[] data, byte[] digest, LongRef digestLen) {
         long rv = C.Digest(session, data, digest, digestLen);
         if (rv != CKR.OK) throw new CKRException(rv);
     }
@@ -1116,7 +1126,7 @@ public class CE {
      * @see C#Digest(long, byte[], byte[], LongRef)
      * @see NativeProvider#C_Digest(long, byte[], long, byte[], LongRef)
      */
-    public static byte[] Digest(long session, byte[] data) {
+    public byte[] Digest(long session, byte[] data) {
         LongRef l = new LongRef();
         Digest(session, data, null, l);
         byte[] result = new byte[(int) l.value()];
@@ -1131,7 +1141,7 @@ public class CE {
      * @see C#DigestUpdate(long, byte[])
      * @see NativeProvider#C_DigestUpdate(long, byte[], long)
      */
-    public static void DigestUpdate(long session, byte[] part) {
+    public void DigestUpdate(long session, byte[] part) {
         long rv = C.DigestUpdate(session, part);
         if (rv != CKR.OK) throw new CKRException(rv);
     }
@@ -1144,7 +1154,7 @@ public class CE {
      * @see C#DigestKey(long, long)
      * @see NativeProvider#C_DigestKey(long, long)
      */
-    public static void DigestKey(long session, long key) {
+    public void DigestKey(long session, long key) {
         long rv = C.DigestKey(session, key);
         if (rv != CKR.OK) throw new CKRException(rv);
     }
@@ -1157,7 +1167,7 @@ public class CE {
      * @see C#DigestFinal(long, byte[], LongRef)
      * @see NativeProvider#C_DigestFinal(long, byte[], LongRef)
      */
-    public static void DigestFinal(long session, byte[] digest, LongRef digestLen) {
+    public void DigestFinal(long session, byte[] digest, LongRef digestLen) {
         long rv = C.DigestFinal(session, digest, digestLen);
         if (rv != CKR.OK) throw new CKRException(rv);
     }
@@ -1169,7 +1179,7 @@ public class CE {
      * @see C#DigestFinal(long, byte[], LongRef)
      * @see NativeProvider#C_DigestFinal(long, byte[], LongRef)
      */
-    public static byte[] DigestFinal(long session) {
+    public byte[] DigestFinal(long session) {
         LongRef l = new LongRef();
         DigestFinal(session, null, l);
         byte[] result = new byte[(int) l.value()];
@@ -1186,7 +1196,7 @@ public class CE {
      * @see C#Digest(long, byte[], byte[], LongRef)
      * @see NativeProvider#C_Digest(long, byte[], long, byte[], LongRef)
      */
-    public static byte[] Digest(long session, CKM mechanism, byte[] data) {
+    public byte[] Digest(long session, CKM mechanism, byte[] data) {
         DigestInit(session, mechanism);
         return Digest(session, data);
     }
@@ -1201,7 +1211,7 @@ public class CE {
      * @see C#SignInit(long, CKM, long)
      * @see NativeProvider#C_SignInit(long, CKM, long)
      */
-    public static void SignInit(long session, CKM mechanism, long key) {
+    public void SignInit(long session, CKM mechanism, long key) {
         long rv = C.SignInit(session, mechanism, key);
         if (rv != CKR.OK) throw new CKRException(rv);
     }
@@ -1216,7 +1226,7 @@ public class CE {
      * @see C#Sign(long, byte[], byte[], LongRef)
      * @see NativeProvider#C_Sign(long, byte[], long, byte[], LongRef)
      */
-    public static void Sign(long session, byte[] data, byte[] signature, LongRef signatureLen) {
+    public void Sign(long session, byte[] data, byte[] signature, LongRef signatureLen) {
         long rv = C.Sign(session, data, signature, signatureLen);
         if (rv != CKR.OK) throw new CKRException(rv);
     }
@@ -1230,7 +1240,7 @@ public class CE {
      * @see C#Sign(long, byte[], byte[], LongRef)
      * @see NativeProvider#C_Sign(long, byte[], long, byte[], LongRef)
      */
-    public static byte[] Sign(long session, byte[] data) {
+    public byte[] Sign(long session, byte[] data) {
         LongRef l = new LongRef();
         Sign(session, data, null, l);
         byte[] result = new byte[(int) l.value()];
@@ -1247,7 +1257,7 @@ public class CE {
      * @see C#SignUpdate(long, byte[])
      * @see NativeProvider#C_SignUpdate(long, byte[], long)
      */
-    public static void SignUpdate(long session, byte[] part) {
+    public void SignUpdate(long session, byte[] part) {
         long rv = C.SignUpdate(session, part);
         if (rv != CKR.OK) throw new CKRException(rv);
     }
@@ -1260,7 +1270,7 @@ public class CE {
      * @see C#SignFinal(long, byte[], LongRef)
      * @see NativeProvider#C_SignFinal(long, byte[], LongRef)
      */
-    public static void SignFinal(long session, byte[] signature, LongRef signatureLen) {
+    public void SignFinal(long session, byte[] signature, LongRef signatureLen) {
         long rv = C.SignFinal(session, signature, signatureLen);
         if (rv != CKR.OK) throw new CKRException(rv);
     }
@@ -1272,7 +1282,7 @@ public class CE {
      * @see C#SignFinal(long, byte[], LongRef)
      * @see NativeProvider#C_SignFinal(long, byte[], LongRef)
      */
-    public static byte[] SignFinal(long session) {
+    public byte[] SignFinal(long session) {
         LongRef l = new LongRef();
         SignFinal(session, null, l);
         byte[] result = new byte[(int) l.value()];
@@ -1291,7 +1301,7 @@ public class CE {
      * @see C#Sign(long, byte[], byte[], LongRef)
      * @see NativeProvider#C_Sign(long, byte[], long, byte[], LongRef)
      */
-    public static byte[] Sign(long session, CKM mechanism, long key, byte[] data) {
+    public byte[] Sign(long session, CKM mechanism, long key, byte[] data) {
         SignInit(session, mechanism, key);
         return Sign(session, data);
     }
@@ -1304,7 +1314,7 @@ public class CE {
      * @see C#SignRecoverInit(long, CKM, long)
      * @see NativeProvider#C_SignRecoverInit(long, CKM, long)
      */
-    public static void SignRecoverInit(long session, CKM mechanism, long key) {
+    public void SignRecoverInit(long session, CKM mechanism, long key) {
         long rv = C.SignRecoverInit(session, mechanism, key);
         if (rv != CKR.OK) throw new CKRException(rv);
     }
@@ -1318,7 +1328,7 @@ public class CE {
      * @see C#SignRecover(long, byte[], byte[], LongRef)
      * @see NativeProvider#C_SignRecover(long, byte[], long, byte[], LongRef)
      */
-    public static void SignRecover(long session, byte[] data, byte[] signature, LongRef signatureLen) {
+    public void SignRecover(long session, byte[] data, byte[] signature, LongRef signatureLen) {
         long rv = C.SignRecover(session, data, signature, signatureLen);
         if (rv != CKR.OK) throw new CKRException(rv);
     }
@@ -1331,7 +1341,7 @@ public class CE {
      * @see C#SignRecover(long, byte[], byte[], LongRef)
      * @see NativeProvider#C_SignRecover(long, byte[], long, byte[], LongRef)
      */
-    public static byte[] SignRecover(long session, byte[] data) {
+    public byte[] SignRecover(long session, byte[] data) {
         LongRef l = new LongRef();
         SignRecover(session, data, null, l);
         byte[] result = new byte[(int) l.value()];
@@ -1349,7 +1359,7 @@ public class CE {
      * @see C#SignRecover(long, byte[], byte[], LongRef)
      * @see NativeProvider#C_SignRecover(long, byte[], long, byte[], LongRef)
      */
-    public static byte[] SignRecover(long session, CKM mechanism, long key, byte[] data) {
+    public byte[] SignRecover(long session, CKM mechanism, long key, byte[] data) {
         SignRecoverInit(session, mechanism, key);
         return SignRecover(session, data);
     }
@@ -1363,7 +1373,7 @@ public class CE {
      * @see C#VerifyInit(long, CKM, long)
      * @see NativeProvider#C_VerifyInit(long, CKM, long)
      */
-    public static void VerifyInit(long session, CKM mechanism, long key) {
+    public void VerifyInit(long session, CKM mechanism, long key) {
         long rv = C.VerifyInit(session, mechanism, key);
         if (rv != CKR.OK) throw new CKRException(rv);
     }
@@ -1377,7 +1387,7 @@ public class CE {
      * @see C#Verify(long, byte[], byte[])
      * @see NativeProvider#C_Verify(long, byte[], long, byte[], long)
      */
-    public static void Verify(long session, byte[] data, byte[] signature) {
+    public void Verify(long session, byte[] data, byte[] signature) {
         long rv = C.Verify(session, data, signature);
         if (rv != CKR.OK) throw new CKRException(rv);
     }
@@ -1390,7 +1400,7 @@ public class CE {
      * @see C#VerifyUpdate(long, byte[])
      * @see NativeProvider#C_VerifyUpdate(long, byte[], long)
      */
-    public static void VerifyUpdate(long session, byte[] part) {
+    public void VerifyUpdate(long session, byte[] part) {
         long rv = C.VerifyUpdate(session, part);
         if (rv != CKR.OK) throw new CKRException(rv);
     }
@@ -1402,7 +1412,7 @@ public class CE {
      * @see C#VerifyFinal(long, byte[])
      * @see NativeProvider#C_VerifyFinal(long, byte[], long)
      */
-    public static void VerifyFinal(long session, byte[] signature) {
+    public void VerifyFinal(long session, byte[] signature) {
         long rv = C.VerifyFinal(session, signature);
         if (rv != CKR.OK) throw new CKRException(rv);
     }
@@ -1418,7 +1428,7 @@ public class CE {
      * @see C#Verify(long, byte[], byte[])
      * @see NativeProvider#C_Verify(long, byte[], long, byte[], long)
      */
-    public static void Verify(long session, CKM mechanism, long key, byte[] data, byte[] signature) {
+    public void Verify(long session, CKM mechanism, long key, byte[] data, byte[] signature) {
         VerifyInit(session, mechanism, key);
         Verify(session, data, signature);
     }
@@ -1431,7 +1441,7 @@ public class CE {
      * @see C#VerifyRecoverInit(long, CKM, long)
      * @see NativeProvider#C_VerifyRecoverInit(long, CKM, long)
      */
-    public static void VerifyRecoverInit(long session, CKM mechanism, long key) {
+    public void VerifyRecoverInit(long session, CKM mechanism, long key) {
         long rv = C.VerifyRecoverInit(session, mechanism, key);
         if (rv != CKR.OK) throw new CKRException(rv);
     }
@@ -1445,7 +1455,7 @@ public class CE {
      * @see C#VerifyRecover(long, byte[], byte[], LongRef)
      * @see NativeProvider#C_VerifyRecover(long, byte[], long, byte[], LongRef)
      */
-    public static void VerifyRecover(long session, byte[] signature, byte[] data, LongRef dataLen) {
+    public void VerifyRecover(long session, byte[] signature, byte[] data, LongRef dataLen) {
         long rv = C.VerifyRecover(session, signature, data, dataLen);
         if (rv != CKR.OK) throw new CKRException(rv);
     }
@@ -1458,7 +1468,7 @@ public class CE {
      * @see C#VerifyRecover(long, byte[], byte[], LongRef)
      * @see NativeProvider#C_VerifyRecover(long, byte[], long, byte[], LongRef)
      */
-    public static byte[] VerifyRecover(long session, byte[] signature) {
+    public byte[] VerifyRecover(long session, byte[] signature) {
         LongRef l = new LongRef();
         VerifyRecover(session, signature, null, l);
         byte[] result = new byte[(int) l.value()];
@@ -1476,7 +1486,7 @@ public class CE {
      * @see C#VerifyRecover(long, byte[], byte[], LongRef)
      * @see NativeProvider#C_VerifyRecover(long, byte[], long, byte[], LongRef)
      */
-    public static byte[] VerifyRecover(long session, CKM mechanism, long key, byte[] signature) {
+    public byte[] VerifyRecover(long session, CKM mechanism, long key, byte[] signature) {
         VerifyRecoverInit(session, mechanism, key);
         return VerifyRecover(session, signature);
     }
@@ -1490,7 +1500,7 @@ public class CE {
      * @see C#DigestEncryptUpdate(long, byte[], byte[], LongRef)
      * @see NativeProvider#C_DigestEncryptUpdate(long, byte[], long, byte[], LongRef)
      */
-    public static void DigestEncryptUpdate(long session, byte[] part, byte[] encryptedPart, LongRef encryptedPartLen) {
+    public void DigestEncryptUpdate(long session, byte[] part, byte[] encryptedPart, LongRef encryptedPartLen) {
         long rv = C.DigestEncryptUpdate(session, part, encryptedPart, encryptedPartLen);
         if (rv != CKR.OK) throw new CKRException(rv);
     }
@@ -1503,7 +1513,7 @@ public class CE {
      * @see C#DigestEncryptUpdate(long, byte[], byte[], LongRef)
      * @see NativeProvider#C_DigestEncryptUpdate(long, byte[], long, byte[], LongRef)
      */
-    public static byte[] DigestEncryptUpdate(long session, byte[] part) {
+    public byte[] DigestEncryptUpdate(long session, byte[] part) {
         LongRef l = new LongRef();
         DigestEncryptUpdate(session, part, null, l);
         byte[] result = new byte[(int) l.value()];
@@ -1520,7 +1530,7 @@ public class CE {
      * @see C#DigestUpdate(long, byte[])
      * @see NativeProvider#C_DigestUpdate(long, byte[], long)
      */
-    public static void DecryptDigestUpdate(long session, byte[] encryptedPart, byte[] part, LongRef partLen) {
+    public void DecryptDigestUpdate(long session, byte[] encryptedPart, byte[] part, LongRef partLen) {
         long rv = C.DecryptDigestUpdate(session, encryptedPart, part, partLen);
         if (rv != CKR.OK) throw new CKRException(rv);
     }
@@ -1533,7 +1543,7 @@ public class CE {
      * @see C#DecryptDigestUpdate(long, byte[], byte[], LongRef)
      * @see NativeProvider#C_DecryptDigestUpdate(long, byte[], long, byte[], LongRef)
      */
-    public static byte[] DecryptDigestUpdate(long session, byte[] encryptedPart) {
+    public byte[] DecryptDigestUpdate(long session, byte[] encryptedPart) {
         LongRef l = new LongRef();
         DecryptDigestUpdate(session, encryptedPart, null, l);
         byte[] result = new byte[(int) l.value()];
@@ -1550,7 +1560,7 @@ public class CE {
      * @see C#SignEncryptUpdate(long, byte[], byte[], LongRef)
      * @see NativeProvider#C_SignEncryptUpdate(long, byte[], long, byte[], LongRef)
      */
-    public static void SignEncryptUpdate(long session, byte[] part, byte[] encryptedPart, LongRef encryptedPartLen) {
+    public void SignEncryptUpdate(long session, byte[] part, byte[] encryptedPart, LongRef encryptedPartLen) {
         long rv = C.SignEncryptUpdate(session, part, encryptedPart, encryptedPartLen);
         if (rv != CKR.OK) throw new CKRException(rv);
     }
@@ -1563,7 +1573,7 @@ public class CE {
      * @see C#SignEncryptUpdate(long, byte[], byte[], LongRef)
      * @see NativeProvider#C_SignEncryptUpdate(long, byte[], long, byte[], LongRef)
      */
-    public static byte[] SignEncryptUpdate(long session, byte[] part) {
+    public byte[] SignEncryptUpdate(long session, byte[] part) {
         LongRef l = new LongRef();
         SignEncryptUpdate(session, part, null, l);
         byte[] result = new byte[(int) l.value()];
@@ -1580,7 +1590,7 @@ public class CE {
      * @see C#DecryptVerifyUpdate(long, byte[], byte[], LongRef)
      * @see NativeProvider#C_DecryptVerifyUpdate(long, byte[], long, byte[], LongRef)
      */
-    public static void DecryptVerifyUpdate(long session, byte[] encryptedPart, byte[] part, LongRef partLen) {
+    public void DecryptVerifyUpdate(long session, byte[] encryptedPart, byte[] part, LongRef partLen) {
         long rv = C.DecryptVerifyUpdate(session, encryptedPart, part, partLen);
         if (rv != CKR.OK) throw new CKRException(rv);
     }
@@ -1593,7 +1603,7 @@ public class CE {
      * @see C#DecryptVerifyUpdate(long, byte[], byte[], LongRef)
      * @see NativeProvider#C_DecryptVerifyUpdate(long, byte[], long, byte[], LongRef)
      */
-    public static byte[] DecryptVerifyUpdate(long session, byte[] encryptedPart) {
+    public byte[] DecryptVerifyUpdate(long session, byte[] encryptedPart) {
         LongRef l = new LongRef();
         DecryptVerifyUpdate(session, encryptedPart, null, l);
         byte[] result = new byte[(int) l.value()];
@@ -1610,7 +1620,7 @@ public class CE {
      * @see C#GenerateKey(long, CKM, CKA[], LongRef)
      * @see NativeProvider#C_GenerateKey(long, CKM, Template, long, LongRef)
      */
-    public static void GenerateKey(long session, CKM mechanism, CKA[] templ, LongRef key) {
+    public void GenerateKey(long session, CKM mechanism, CKA[] templ, LongRef key) {
         long rv = C.GenerateKey(session, mechanism, templ, key);
         if (rv != CKR.OK) throw new CKRException(rv);
     }
@@ -1624,7 +1634,7 @@ public class CE {
      * @see C#GenerateKey(long, CKM, CKA[], LongRef)
      * @see NativeProvider#C_GenerateKey(long, CKM, Template, long, LongRef)
      */
-    public static long GenerateKey(long session, CKM mechanism, CKA... templ) {
+    public long GenerateKey(long session, CKM mechanism, CKA... templ) {
         LongRef key = new LongRef();
         GenerateKey(session, mechanism, templ, key);
         return key.value();
@@ -1641,7 +1651,7 @@ public class CE {
      * @see C#GenerateKeyPair(long, CKM, CKA[], CKA[], LongRef, LongRef)
      * @see NativeProvider#C_GenerateKeyPair(long, CKM, Template, long, Template, long, LongRef, LongRef)
      */
-    public static void GenerateKeyPair(long session, CKM mechanism, CKA[] publicKeyTemplate, CKA[] privateKeyTemplate,
+    public void GenerateKeyPair(long session, CKM mechanism, CKA[] publicKeyTemplate, CKA[] privateKeyTemplate,
             LongRef publicKey, LongRef privateKey) {
         long rv = C.GenerateKeyPair(session, mechanism, publicKeyTemplate, privateKeyTemplate, publicKey, privateKey);
         if (rv != CKR.OK) throw new CKRException(rv);
@@ -1658,7 +1668,7 @@ public class CE {
      * @see C#WrapKey(long, CKM, long, long, byte[], LongRef)
      * @see NativeProvider#C_WrapKey(long, CKM, long, long, byte[], LongRef)
      */
-    public static void WrapKey(long session, CKM mechanism, long wrappingKey, long key, byte[] wrappedKey, LongRef wrappedKeyLen) {
+    public void WrapKey(long session, CKM mechanism, long wrappingKey, long key, byte[] wrappedKey, LongRef wrappedKeyLen) {
         long rv = C.WrapKey(session, mechanism, wrappingKey, key, wrappedKey, wrappedKeyLen);
         if (rv != CKR.OK) throw new CKRException(rv);
     }
@@ -1673,7 +1683,7 @@ public class CE {
      * @see C#WrapKey(long, CKM, long, long, byte[], LongRef)
      * @see NativeProvider#C_WrapKey(long, CKM, long, long, byte[], LongRef)
      */
-    public static byte[] WrapKey(long session, CKM mechanism, long wrappingKey, long key) {
+    public byte[] WrapKey(long session, CKM mechanism, long wrappingKey, long key) {
         LongRef l = new LongRef();
         WrapKey(session, mechanism, wrappingKey, key, null, l);
         byte[] result = new byte[(int) l.value()];
@@ -1692,7 +1702,7 @@ public class CE {
      * @see C#UnwrapKey(long, CKM, long, byte[], CKA[], LongRef)
      * @see NativeProvider#C_UnwrapKey(long, CKM, long, byte[], long, Template, long, LongRef)
      */
-    public static void UnwrapKey(long session, CKM mechanism, long unwrappingKey, byte[] wrappedKey, CKA[] templ, LongRef key) {
+    public void UnwrapKey(long session, CKM mechanism, long unwrappingKey, byte[] wrappedKey, CKA[] templ, LongRef key) {
         long rv = C.UnwrapKey(session, mechanism, unwrappingKey, wrappedKey, templ, key);
         if (rv != CKR.OK) throw new CKRException(rv);
     }
@@ -1708,7 +1718,7 @@ public class CE {
      * @see C#UnwrapKey(long, CKM, long, byte[], CKA[], LongRef)
      * @see NativeProvider#C_UnwrapKey(long, CKM, long, byte[], long, Template, long, LongRef)
      */
-    public static long UnwrapKey(long session, CKM mechanism, long unwrappingKey, byte[] wrappedKey, CKA... templ) {
+    public long UnwrapKey(long session, CKM mechanism, long unwrappingKey, byte[] wrappedKey, CKA... templ) {
         LongRef result = new LongRef();
         UnwrapKey(session, mechanism, unwrappingKey, wrappedKey, templ, result);
         return result.value();
@@ -1724,7 +1734,7 @@ public class CE {
      * @see C#DeriveKey(long, CKM, long, CKA[], LongRef)
      * @see NativeProvider#C_DeriveKey(long, CKM, long, Template, long, LongRef)
      */
-    public static void DeriveKey(long session, CKM mechanism, long baseKey, CKA[] templ, LongRef key) {
+    public void DeriveKey(long session, CKM mechanism, long baseKey, CKA[] templ, LongRef key) {
         long rv = C.DeriveKey(session, mechanism, baseKey, templ, key);
         if (rv != CKR.OK) throw new CKRException(rv);
     }
@@ -1739,7 +1749,7 @@ public class CE {
      * @see C#DeriveKey(long, CKM, long, CKA[], LongRef)
      * @see NativeProvider#C_DeriveKey(long, CKM, long, Template, long, LongRef)
      */
-    public static long DeriveKey(long session, CKM mechanism, long baseKey, CKA... templ) {
+    public long DeriveKey(long session, CKM mechanism, long baseKey, CKA... templ) {
         LongRef key = new LongRef();
         DeriveKey(session, mechanism, baseKey, templ, key);
         return key.value();
@@ -1752,7 +1762,7 @@ public class CE {
      * @see C#SeedRandom(long, byte[])
      * @see NativeProvider#C_SeedRandom(long, byte[], long)
      */
-    public static void SeedRandom(long session, byte[] seed) {
+    public void SeedRandom(long session, byte[] seed) {
         long rv = C.SeedRandom(session, seed);
         if (rv != CKR.OK) throw new CKRException(rv);
     }
@@ -1764,7 +1774,7 @@ public class CE {
      * @see C#GenerateRandom(long, byte[])
      * @see NativeProvider#C_GenerateRandom(long, byte[], long)
      */
-    public static void GenerateRandom(long session, byte[] randomData) {
+    public void GenerateRandom(long session, byte[] randomData) {
         long rv = C.GenerateRandom(session, randomData);
         if (rv != CKR.OK) throw new CKRException(rv);
     }
@@ -1777,7 +1787,7 @@ public class CE {
      * @see C#GenerateRandom(long, byte[])
      * @see NativeProvider#C_GenerateRandom(long, byte[], long)
      */
-    public static byte[] GenerateRandom(long session, int randomLen) {
+    public byte[] GenerateRandom(long session, int randomLen) {
         byte[] result = new byte[randomLen];
         GenerateRandom(session, result);
         return result;
@@ -1791,7 +1801,7 @@ public class CE {
      * @see C#GetFunctionStatus(long)
      * @see NativeProvider#C_GetFunctionStatus(long)
      */
-    public static void GetFunctionStatus(long session) {
+    public void GetFunctionStatus(long session) {
         long rv = C.GetFunctionStatus(session);
         if (rv != CKR.OK) throw new CKRException(rv);
     }
@@ -1804,7 +1814,7 @@ public class CE {
      * @see C#GetFunctionStatus(long)
      * @see NativeProvider#C_GetFunctionStatus(long)
      */
-    public static void CancelFunction(long session) {
+    public void CancelFunction(long session) {
         long rv = C.CancelFunction(session);
         if (rv != CKR.OK) throw new CKRException(rv);
     }

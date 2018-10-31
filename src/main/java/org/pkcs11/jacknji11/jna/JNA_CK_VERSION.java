@@ -24,12 +24,14 @@ package org.pkcs11.jacknji11.jna;
 import org.pkcs11.jacknji11.CK_VERSION;
 
 import com.sun.jna.Structure;
+import com.sun.jna.Structure.FieldOrder;
 
 /**
  * JNA wrapper for PKCS#11 CK_VERSION.  It hardly seems worthwhile
  * wrapping 2 bytes, but we have.
  * @author Joel Hockey (joel.hockey@gmail.com)
  */
+@FieldOrder({"major", "minor"})
 public class JNA_CK_VERSION extends Structure {
     public byte major;
     public byte minor;

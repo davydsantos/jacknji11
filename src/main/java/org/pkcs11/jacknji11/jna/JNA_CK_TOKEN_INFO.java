@@ -25,11 +25,13 @@ import org.pkcs11.jacknji11.CK_TOKEN_INFO;
 
 import com.sun.jna.NativeLong;
 import com.sun.jna.Structure;
+import com.sun.jna.Structure.FieldOrder;
 
 /**
  * JNA wrapper for PKCS#11 CK_TOKEN_INFO struct.
  * @author Joel Hockey (joel.hockey@gmail.com)
  */
+@FieldOrder({"label","manufacturerID","model","serialNumber","flags","ulMaxSessionCount","ulSessionCount","ulMaxRwSessionCount","ulRwSessionCount","ulMaxPinLen","ulMinPinLen","ulTotalPublicMemory","ulFreePublicMemory","ulTotalPrivateMemory","ulFreePrivateMemory","hardwareVersion","firmwareVersion","utcTime"})
 public class JNA_CK_TOKEN_INFO extends Structure {
     public byte[] label;
     public byte[] manufacturerID;

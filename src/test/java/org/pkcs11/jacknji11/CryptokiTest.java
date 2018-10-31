@@ -40,6 +40,7 @@ import org.pkcs11.jacknji11.CK_SLOT_INFO;
 import org.pkcs11.jacknji11.CK_TOKEN_INFO;
 import org.pkcs11.jacknji11.Hex;
 import org.pkcs11.jacknji11.LongRef;
+import org.pkcs11.jacknji11.jna.JNA;
 
 import junit.framework.TestCase;
 
@@ -54,16 +55,19 @@ public class CryptokiTest extends TestCase {
     private static final byte[] USER_PIN = "userpin".getBytes();
     private static final long TESTSLOT = 0;
     private static final long INITSLOT = 1;
+    private CE CE;
 
 //    private static final long TESTSLOT = 17;
 //    private static final long INITSLOT = 18;
 
     public void setUp() {
+        CE = new CE(new C(new JNA()));
         CE.Initialize();
     }
 
     public void tearDown() {
         CE.Finalize();
+        CE = null;
     }
 
     public void testGetInfo() {
@@ -129,7 +133,12 @@ public class CryptokiTest extends TestCase {
         long s3 = CE.OpenSession(TESTSLOT, CKS.RW_PUBLIC_SESSION, null, null);
         CE.CloseSession(s1);
         CE.CloseAllSessions(TESTSLOT);
-        assertEquals(CKR.SESSION_HANDLE_INVALID, C.CloseSession(s3));
+        try {
+            CE.CloseSession(s3);
+            fail("Should throw exception");
+        } catch (CKRException e) {
+            assertEquals(CKR.SESSION_HANDLE_INVALID, e.getCKR());
+        }
     }
 
     public void testGetSetOperationState() {
@@ -306,7 +315,12 @@ public class CryptokiTest extends TestCase {
 
         CE.VerifyInit(session, new CKM(CKM.SHA256_RSA_PKCS), pubKey.value());
         CE.Verify(session, data, sig1);
-        assertEquals(CKR.SIGNATURE_INVALID, C.Verify(session, data, new byte[32]));
+        try {
+            CE.Verify(session, data, new byte[32]);
+            fail("Should throw exception");
+        } catch (CKRException e) {
+            assertEquals(CKR.SIGNATURE_INVALID, e.getCKR());
+        }
 
         CE.VerifyInit(session, new CKM(CKM.SHA256_RSA_PKCS), pubKey.value());
         CE.VerifyUpdate(session, new byte[50]);

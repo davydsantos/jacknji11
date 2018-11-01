@@ -25,11 +25,13 @@ import org.pkcs11.jacknji11.CK_MECHANISM_INFO;
 
 import com.sun.jna.NativeLong;
 import com.sun.jna.Structure;
+import com.sun.jna.Structure.FieldOrder;
 
 /**
  * JNA wrapper for PKCS#11 CK_MECHANSIM_INFO struct.
  * @author Joel Hockey (joel.hockey@gmail.com)
  */
+@FieldOrder({"ulMinKeySize", "ulMaxKeySize", "flags"})
 public class JNA_CK_MECHANISM_INFO extends Structure {
     public NativeLong ulMinKeySize;
     public NativeLong ulMaxKeySize;

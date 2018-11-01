@@ -25,11 +25,13 @@ import org.pkcs11.jacknji11.CK_SESSION_INFO;
 
 import com.sun.jna.NativeLong;
 import com.sun.jna.Structure;
+import com.sun.jna.Structure.FieldOrder;
 
 /**
  * JNA wrapper for PKCS#11 CK_SESSION_INFO struct.
  * @author Joel Hockey (joel.hockey@gmail.com)
  */
+@FieldOrder({"slotID", "state", "flags", "ulDeviceError"})
 public class JNA_CK_SESSION_INFO extends Structure {
     public NativeLong slotID;
     public NativeLong state;

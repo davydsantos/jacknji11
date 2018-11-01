@@ -25,6 +25,7 @@ import org.pkcs11.jacknji11.CK_INFO;
 
 import com.sun.jna.NativeLong;
 import com.sun.jna.Structure;
+import com.sun.jna.Structure.FieldOrder;
 
 /**
  * JNA wrapper for PKCS#11 CK_INFO struct.  It sets align type to {@link Structure#ALIGN_NONE}
@@ -32,6 +33,7 @@ import com.sun.jna.Structure;
  * how painful that learning experience was.
  * @author Joel Hockey (joel.hockey@gmail.com)
  */
+@FieldOrder({"cryptokiVersion", "manufacturerID", "flags", "libraryDescription", "libraryVersion"})
 public class JNA_CK_INFO extends Structure {
 
     public JNA_CK_VERSION cryptokiVersion;

@@ -27,12 +27,14 @@ import com.sun.jna.Memory;
 import com.sun.jna.NativeLong;
 import com.sun.jna.Pointer;
 import com.sun.jna.Structure;
+import com.sun.jna.Structure.FieldOrder;
 
 
 /**
  * CKM_? constants and CK_MECHANISM struct wrapper.
  * @author Joel Hockey (joel.hockey@gmail.com)
  */
+@FieldOrder({"mechanism", "pParameter", "ulParameterLen"})
 public class JNA_CKM extends Structure {
     public NativeLong mechanism;
     public Pointer pParameter;

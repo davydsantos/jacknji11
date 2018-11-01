@@ -25,11 +25,13 @@ import org.pkcs11.jacknji11.CK_SLOT_INFO;
 
 import com.sun.jna.NativeLong;
 import com.sun.jna.Structure;
+import com.sun.jna.Structure.FieldOrder;
 
 /**
  * JNA wrapper for PKCS#11 CK_SLOT_INFO struct.
  * @author Joel Hockey (joel.hockey@gmail.com)
  */
+@FieldOrder({"slotDescription", "manufacturerID", "flags", "hardwareVersion", "firmwareVersion"})
 public class JNA_CK_SLOT_INFO extends Structure {
     public byte[] slotDescription;
     public byte[] manufacturerID;

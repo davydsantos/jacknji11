@@ -9,6 +9,27 @@ Uses a provider architecture to allow any implementation of the
 native mapping.  Includes [JNA](https://github.com/twall/jna)
 as default provider to bridge between Java and native cryptoki lib.
 
+## Import
+### Maven
+Since this is currently not published into any mvn repos, the easiest way is to use [jitpack.io]. For that: 
+- add the jitpack as a new repo
+```xml
+	<repositories>
+		<repository>
+			<id>jitpack.io</id>
+			<url>https://jitpack.io</url>
+		</repository>
+	</repositories>
+```
+- add the dependency (slightly different pattern using the matching tag from this repo)
+```xml
+		<dependency>
+			<groupId>com.github.davydsantos</groupId>
+			<artifactId>jacknji11</artifactId>
+			<version>1.2</version>
+		</dependency>
+```
+
 ## Usage example
 
 ```java

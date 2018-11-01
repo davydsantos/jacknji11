@@ -1,3 +1,5 @@
+[![](https://jitpack.io/v/davydsantos/jacknji11.svg)](https://jitpack.io/#davydsantos/jacknji11)
+
 # Java Interface for PKCS#11
 
 Provides a Java PKCS#11 interface that provides low-level interface
